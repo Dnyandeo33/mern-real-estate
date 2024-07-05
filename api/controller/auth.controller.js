@@ -25,7 +25,7 @@ const authController = {
                 const hashPassword = bcryptjs.hashSync(password, 10)
                 const createUser = await new User({ email, username, password: hashPassword })
                 const user = await createUser.save()
-                return res.status(201).json({ user })
+                return res.status(201).json('User created successfully...')
             }
 
         } catch (error) {
