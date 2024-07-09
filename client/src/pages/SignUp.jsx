@@ -19,7 +19,6 @@ const SignUp = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     dispatch(signUpUser(formData));
-    if (!formData.email || !formData.username || !formData.password) return;
     navigate('/sign-in');
   };
 

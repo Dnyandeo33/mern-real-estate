@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
+// signUp curruentUser
 export const signUpUser = createAsyncThunk('auth/sign-up', async (userData, { rejectWithValue }) => {
     try {
         const res = await axios.post('/api/auth/sign-up', userData)
@@ -10,12 +11,22 @@ export const signUpUser = createAsyncThunk('auth/sign-up', async (userData, { re
     }
 });
 
+// signIn curruentUser
+export const signInUser = createAsyncThunk('auth/sign-in', async (userData, { rejectWithValue }) => {
+    try {
+        const res = await axios.post('/api/auth/sign-in', userData)
+        return res.data;
+    } catch (error) {
+        return rejectWithValue(error.response.data.message);
+    }
+})
+
 const userSlice = createSlice({
-    name: 'user',
+    name: 'currentUser',
     initialState: {
-        user: null,
+        currentUser: null,
         loading: false,
-        error: false,
+        error: null,
     },
     reducers: {},
     extraReducers: (builder) => {
@@ -24,9 +35,21 @@ const userSlice = createSlice({
         })
         builder.addCase(signUpUser.fulfilled, (state, action) => {
             state.loading = false;
-            state.user = action.payload;
+            state.currentUser = action.payload;
         })
         builder.addCase(signUpUser.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
+        })
+        // signIn currentUser
+        builder.addCase(signInUser.pending, (state) => {
+            state.loading = true;
+        })
+        builder.addCase(signInUser.fulfilled, (state, action) => {
+            state.loading = false;
+            state.currentUser = action.payload;
+        })
+        builder.addCase(signInUser.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload;
         })
