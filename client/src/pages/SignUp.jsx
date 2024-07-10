@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
+import OAuth from '../components/OAuth';
 import { signUpUser } from '../redux-toolkit/user/userSlice';
 
 const SignUp = () => {
@@ -62,6 +63,7 @@ const SignUp = () => {
           >
             {loading ? 'Loading...' : 'Create Account'}
           </button>
+          <OAuth />
         </form>
         <div className="flex mt-5 gap-2">
           <p className="text-center text-sm">Have an account?</p>

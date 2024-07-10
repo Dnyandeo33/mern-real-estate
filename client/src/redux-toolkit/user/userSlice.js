@@ -21,6 +21,15 @@ export const signInUser = createAsyncThunk('auth/sign-in', async (userData, { re
     }
 })
 
+export const googleSing = createAsyncThunk('auth/google/', async (userData, { rejectWithValue }) => {
+    try {
+        const res = await axios.post('/api/auth/google', userData)
+        return res.data;
+    } catch (error) {
+        return rejectWithValue(error.response.data.message);
+    }
+})
+
 const userSlice = createSlice({
     name: 'currentUser',
     initialState: {
@@ -51,6 +60,18 @@ const userSlice = createSlice({
             state.currentUser = action.payload;
         })
         builder.addCase(signInUser.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
+        })
+        // googleSignIn currentUser
+        builder.addCase(googleSing.pending, (state) => {
+            state.loading = true;
+        })
+        builder.addCase(googleSing.fulfilled, (state, action) => {
+            state.loading = false;
+            state.currentUser = action.payload;
+        })
+        builder.addCase(googleSing.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload;
         })
