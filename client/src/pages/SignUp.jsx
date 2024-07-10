@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { signUpUser } from '../redux-toolkit/user/userSlice';
@@ -7,7 +7,7 @@ const SignUp = () => {
   const [formData, setFormData] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error } = useSelector((state) => state.user);
+  const { loading, error, success } = useSelector((state) => state.user);
 
   const handleChange = (e) => {
     setFormData({
@@ -19,8 +19,13 @@ const SignUp = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     dispatch(signUpUser(formData));
-    navigate('/sign-in');
   };
+
+  useEffect(() => {
+    if (success) {
+      navigate('/sign-in');
+    }
+  }, [success, navigate]);
 
   return (
     <div className=" max-w-lg mx-auto p-3">

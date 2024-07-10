@@ -25,6 +25,7 @@ const userSlice = createSlice({
     name: 'currentUser',
     initialState: {
         currentUser: null,
+        success: null,
         loading: false,
         error: null,
     },
@@ -35,7 +36,7 @@ const userSlice = createSlice({
         })
         builder.addCase(signUpUser.fulfilled, (state, action) => {
             state.loading = false;
-            state.currentUser = action.payload;
+            state.success = action.payload;
         })
         builder.addCase(signUpUser.rejected, (state, action) => {
             state.loading = false;
