@@ -1,10 +1,11 @@
 import express from 'express';
 import userController from '../controller/user.controller.js';
-const { signUp } = userController
+import verifyToken from '../middleware/verifyToken.js';
+const { updateUser, test } = userController
 
-const router = express.Router();
+const router = express.Router()
 
-router.post('/sign-up', signUp)
+router.put('/update/:userId', verifyToken, updateUser)
 
 
 export default router;
