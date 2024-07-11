@@ -5,8 +5,9 @@ import {
   uploadBytesResumable,
 } from 'firebase/storage';
 import { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { app } from '../firebase';
+import { updateUser } from '../redux-toolkit/user/userSlice';
 
 const Profile = () => {
   const [file, setFile] = useState(undefined);
@@ -15,7 +16,10 @@ const Profile = () => {
   const [formData, setFormData] = useState({});
 
   const fileRef = useRef();
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser, loading, error, success } = useSelector(
+    (state) => state.user
+  );
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (file) {
@@ -46,10 +50,27 @@ const Profile = () => {
     );
   };
 
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(
+      updateUser({
+        id: currentUser._id,
+        email: formData.email,
+        username: formData.username,
+        password: formData.password,
+        avatar: formData.avatar,
+      })
+    );
+  };
+
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className=" text-3xl text-center font-semibold my-7">Profile</h1>
-      <form className="flex flex-col gap-4">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
           onChange={(e) => setFile(e.target.files[0])}
           hidden
@@ -81,21 +102,29 @@ const Profile = () => {
           type="text"
           placeholder="username"
           id="username"
+          defaultValue={currentUser.username}
+          onChange={handleChange}
         />
         <input
           className="p-3 border rounded-lg"
           type="text"
           placeholder="Email"
           id="email"
+          defaultValue={currentUser.email}
+          onChange={handleChange}
         />
         <input
           className="p-3 border rounded-lg"
           type="password"
           placeholder="Password"
           id="password"
+          onChange={handleChange}
         />
-        <button className="p-3 bg-slate-700 uppercase text-white rounded-lg hover:opacity-95 disabled:opacity-80">
-          Update
+        <button
+          disabled={loading}
+          className="p-3 bg-slate-700 uppercase text-white rounded-lg hover:opacity-95 disabled:opacity-80"
+        >
+          {loading ? 'Loading...' : 'Update'}
         </button>
         <button className="p-3 bg-green-700 uppercase text-white rounded-lg hover:opacity-95 disabled:opacity-80">
           Create Listing
@@ -105,6 +134,10 @@ const Profile = () => {
         <span className="text-red-700 cursor-pointer">Delete Account</span>
         <span className="text-red-700 cursor-pointer">Sign Out</span>
       </div>
+      <p className="text-red-700 text-center">{error && error}</p>
+      <p className="text-green-700 text-center">
+        {success && 'User is update successfully...'}
+      </p>
     </div>
   );
 };

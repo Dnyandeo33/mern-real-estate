@@ -30,11 +30,20 @@ export const googleSing = createAsyncThunk('auth/google/', async (userData, { re
     }
 })
 
+export const updateUser = createAsyncThunk('update/userId', async (userData, { rejectWithValue }) => {
+    try {
+        const res = await axios.put(`/api/user/update/${userData.id}`, userData)
+        return res.data;
+    } catch (error) {
+        return rejectWithValue(error.response.data.message)
+    }
+})
+
 const userSlice = createSlice({
     name: 'currentUser',
     initialState: {
         currentUser: null,
-        success: null,
+        success: false,
         loading: false,
         error: null,
     },
@@ -45,11 +54,14 @@ const userSlice = createSlice({
         })
         builder.addCase(signUpUser.fulfilled, (state, action) => {
             state.loading = false;
-            state.success = action.payload;
+            state.currentUser = action.payload;
+            state.error = null
+            state.success = true;
         })
         builder.addCase(signUpUser.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload;
+            state.success = false;
         })
         // signIn currentUser
         builder.addCase(signInUser.pending, (state) => {
@@ -58,10 +70,13 @@ const userSlice = createSlice({
         builder.addCase(signInUser.fulfilled, (state, action) => {
             state.loading = false;
             state.currentUser = action.payload;
+            state.error = null
+            state.success = true;
         })
         builder.addCase(signInUser.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload;
+            state.success = false;
         })
         // googleSignIn currentUser
         builder.addCase(googleSing.pending, (state) => {
@@ -70,10 +85,28 @@ const userSlice = createSlice({
         builder.addCase(googleSing.fulfilled, (state, action) => {
             state.loading = false;
             state.currentUser = action.payload;
+            state.error = null
+            state.success = true;
         })
         builder.addCase(googleSing.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload;
+            state.success = false;
+        })
+        // update user
+        builder.addCase(updateUser.pending, (state) => {
+            state.loading = true;
+        })
+        builder.addCase(updateUser.fulfilled, (state, action) => {
+            state.loading = false;
+            state.error = null
+            state.success = true
+            state.currentUser = action.payload;
+        })
+        builder.addCase(updateUser.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
+            state.success = false;
         })
     }
 })
