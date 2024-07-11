@@ -21,6 +21,7 @@ export const signInUser = createAsyncThunk('auth/sign-in', async (userData, { re
     }
 })
 
+// signIn with google
 export const googleSing = createAsyncThunk('auth/google/', async (userData, { rejectWithValue }) => {
     try {
         const res = await axios.post('/api/auth/google', userData)
@@ -30,6 +31,7 @@ export const googleSing = createAsyncThunk('auth/google/', async (userData, { re
     }
 })
 
+// update user
 export const updateUser = createAsyncThunk('update/userId', async (userData, { rejectWithValue }) => {
     try {
         const res = await axios.put(`/api/user/update/${userData.id}`, userData)
@@ -39,14 +41,25 @@ export const updateUser = createAsyncThunk('update/userId', async (userData, { r
     }
 })
 
+// delete user
+export const deleteUser = createAsyncThunk('delete/userId', async (userId, { rejectWithValue }) => {
+    try {
+        const res = await axios.delete(`/api/user/delete/${userId}`)
+        return res.data;
+    } catch (error) {
+        return rejectWithValue(error.response.data.message)
+    }
+})
+
 const userSlice = createSlice({
-    name: 'currentUser',
+    name: 'user',
     initialState: {
         currentUser: null,
         success: false,
         loading: false,
         error: null,
     },
+
     reducers: {},
     extraReducers: (builder) => {
         builder.addCase(signUpUser.pending, (state) => {
@@ -56,12 +69,10 @@ const userSlice = createSlice({
             state.loading = false;
             state.currentUser = action.payload;
             state.error = null
-            state.success = true;
         })
         builder.addCase(signUpUser.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload;
-            state.success = false;
         })
         // signIn currentUser
         builder.addCase(signInUser.pending, (state) => {
@@ -71,12 +82,10 @@ const userSlice = createSlice({
             state.loading = false;
             state.currentUser = action.payload;
             state.error = null
-            state.success = true;
         })
         builder.addCase(signInUser.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload;
-            state.success = false;
         })
         // googleSignIn currentUser
         builder.addCase(googleSing.pending, (state) => {
@@ -86,12 +95,10 @@ const userSlice = createSlice({
             state.loading = false;
             state.currentUser = action.payload;
             state.error = null
-            state.success = true;
         })
         builder.addCase(googleSing.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload;
-            state.success = false;
         })
         // update user
         builder.addCase(updateUser.pending, (state) => {
@@ -99,14 +106,25 @@ const userSlice = createSlice({
         })
         builder.addCase(updateUser.fulfilled, (state, action) => {
             state.loading = false;
-            state.error = null
-            state.success = true
             state.currentUser = action.payload;
+            state.error = null
         })
         builder.addCase(updateUser.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload;
-            state.success = false;
+        })
+        // delete user
+        builder.addCase(deleteUser.pending, (state) => {
+            state.loading = true;
+        })
+        builder.addCase(deleteUser.fulfilled, (state) => {
+            state.loading = false;
+            state.error = null
+            state.currentUser = null
+        })
+        builder.addCase(deleteUser.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
         })
     }
 })

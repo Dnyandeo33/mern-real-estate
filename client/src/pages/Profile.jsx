@@ -7,7 +7,7 @@ import {
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { app } from '../firebase';
-import { updateUser } from '../redux-toolkit/user/userSlice';
+import { deleteUser, updateUser } from '../redux-toolkit/user/userSlice';
 
 const Profile = () => {
   const [file, setFile] = useState(undefined);
@@ -16,9 +16,7 @@ const Profile = () => {
   const [formData, setFormData] = useState({});
 
   const fileRef = useRef();
-  const { currentUser, loading, error, success } = useSelector(
-    (state) => state.user
-  );
+  const { currentUser, loading, error } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -65,6 +63,10 @@ const Profile = () => {
         avatar: formData.avatar,
       })
     );
+  };
+
+  const handleDelete = () => {
+    dispatch(deleteUser(currentUser._id));
   };
 
   return (
@@ -131,13 +133,15 @@ const Profile = () => {
         </button>
       </form>
       <div className="flex justify-between mt-5">
-        <span className="text-red-700 cursor-pointer">Delete Account</span>
+        <span className="text-red-700 cursor-pointer" onClick={handleDelete}>
+          Delete Account
+        </span>
         <span className="text-red-700 cursor-pointer">Sign Out</span>
       </div>
       <p className="text-red-700 text-center">{error && error}</p>
-      <p className="text-green-700 text-center">
+      {/* <p className="text-green-700 text-center">
         {success && 'User is update successfully...'}
-      </p>
+      </p> */}
     </div>
   );
 };

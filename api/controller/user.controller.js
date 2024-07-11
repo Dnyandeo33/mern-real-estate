@@ -4,11 +4,6 @@ import User from '../models/user.model.js';
 import { errorHandler } from "../utils/errorHandler.js";
 
 const userController = {
-    test: async (req, res) => {
-        res.send('test');
-    },
-
-
     updateUser: async (req, res, next) => {
         const { username, email, avatar } = req.body
         const { userId } = req.params
@@ -39,6 +34,16 @@ const userController = {
 
 
     deleteUser: async (req, res, next) => {
+        const { userId } = req.params
+        try {
+            if (req.user.id !== userId) return next(errorHandler(401, 'You are just delete your own account'))
+            await User.findByIdAndDelete(userId)
+            res.clearCookie('access_token')
+            res.status(200).json('User deleted successfully')
+        } catch (error) {
+            next(error)
+        }
+
     }
 }
 
