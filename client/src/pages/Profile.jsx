@@ -4,10 +4,15 @@ import {
   ref,
   uploadBytesResumable,
 } from 'firebase/storage';
+
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { app } from '../firebase';
-import { deleteUser, updateUser } from '../redux-toolkit/user/userSlice';
+import {
+  deleteUser,
+  signOut,
+  updateUser,
+} from '../redux-toolkit/user/userSlice';
 
 const Profile = () => {
   const [file, setFile] = useState(undefined);
@@ -67,6 +72,10 @@ const Profile = () => {
 
   const handleDelete = () => {
     dispatch(deleteUser(currentUser._id));
+  };
+
+  const handleSignOut = () => {
+    dispatch(signOut());
   };
 
   return (
@@ -136,7 +145,9 @@ const Profile = () => {
         <span className="text-red-700 cursor-pointer" onClick={handleDelete}>
           Delete Account
         </span>
-        <span className="text-red-700 cursor-pointer">Sign Out</span>
+        <span className="text-red-700 cursor-pointer" onClick={handleSignOut}>
+          Sign Out
+        </span>
       </div>
       <p className="text-red-700 text-center">{error && error}</p>
       {/* <p className="text-green-700 text-center">

@@ -51,6 +51,15 @@ export const deleteUser = createAsyncThunk('delete/userId', async (userId, { rej
     }
 })
 
+export const signOut = createAsyncThunk('auth/sign-out', async () => {
+    try {
+        const res = await axios.post('/api/user/sign-out')
+        return res.data;
+    } catch (error) {
+        return error
+    }
+})
+
 const userSlice = createSlice({
     name: 'user',
     initialState: {
@@ -62,6 +71,7 @@ const userSlice = createSlice({
 
     reducers: {},
     extraReducers: (builder) => {
+        // signUp user
         builder.addCase(signUpUser.pending, (state) => {
             state.loading = true;
         })
@@ -100,6 +110,7 @@ const userSlice = createSlice({
             state.loading = false;
             state.error = action.payload;
         })
+
         // update user
         builder.addCase(updateUser.pending, (state) => {
             state.loading = true;
@@ -123,6 +134,19 @@ const userSlice = createSlice({
             state.currentUser = null
         })
         builder.addCase(deleteUser.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
+        })
+        // logout
+        builder.addCase(signOut.pending, (state) => {
+            state.loading = true;
+        })
+        builder.addCase(signOut.fulfilled, (state) => {
+            state.loading = false;
+            state.currentUser = null
+            state.error = null
+        })
+        builder.addCase(signOut.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload;
         })

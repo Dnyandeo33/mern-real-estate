@@ -32,7 +32,6 @@ const userController = {
 
     },
 
-
     deleteUser: async (req, res, next) => {
         const { userId } = req.params
         try {
@@ -43,7 +42,15 @@ const userController = {
         } catch (error) {
             next(error)
         }
+    },
 
+    signOut: async (req, res, next) => {
+        try {
+            res.clearCookie('access_token')
+            return res.status(200).json('Logout successfully')
+        } catch (error) {
+            next(error)
+        }
     }
 }
 

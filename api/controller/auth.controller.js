@@ -87,12 +87,7 @@ const authController = {
             next(error)
 
         }
-
-
     },
-    signOut: async (req, res, next) => {
-
-    }
 }
 
 export default authController
