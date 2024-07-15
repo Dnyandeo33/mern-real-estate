@@ -137,7 +137,10 @@ const Profile = () => {
         >
           {loading ? 'Loading...' : 'Update'}
         </button>
-        <button className="p-3 bg-green-700 uppercase text-white rounded-lg hover:opacity-95 disabled:opacity-80">
+        <button
+          type="button"
+          className="p-3 bg-green-700 uppercase text-white rounded-lg hover:opacity-95 disabled:opacity-80"
+        >
           Create Listing
         </button>
       </form>
