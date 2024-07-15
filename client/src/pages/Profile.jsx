@@ -7,6 +7,7 @@ import {
 
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { app } from '../firebase';
 import {
   deleteUser,
@@ -137,12 +138,12 @@ const Profile = () => {
         >
           {loading ? 'Loading...' : 'Update'}
         </button>
-        <button
-          type="button"
-          className="p-3 bg-green-700 uppercase text-white rounded-lg hover:opacity-95 disabled:opacity-80"
+        <Link
+          to="/create-listing"
+          className="p-3 bg-green-700 text-center uppercase text-white rounded-lg hover:opacity-95 disabled:opacity-80"
         >
           Create Listing
-        </button>
+        </Link>
       </form>
       <div className="flex justify-between mt-5">
         <span className="text-red-700 cursor-pointer" onClick={handleDelete}>
